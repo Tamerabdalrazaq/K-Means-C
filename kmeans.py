@@ -5,11 +5,22 @@ EPSILON = 0.01
 def main():
     return 0
 
+
+def readXconv(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+        fl_strings = [line.split(',') for line in lines]
+        fl_num = []
+        for line in fl_strings:
+            fl_num.append([float(str) for str in line]
+    return fl_num
+
 def k_means(k,n,d,iter,data):
-    centroids = [(vector, 1) for vector in data[0:k]]
+    vectors = readXconv(data)
+    centroids = [(vector, 1) for vector in vectors] 
     for i in range(0, iter):
-        prev_centroids = [(centroid[0].copy(), centroid[1]) for centroid in centroids]
-        for x in data:
+        prev_centroids = [centroid[0].copy() for centroid in centroids] #no need to save the number of vectors
+        for x in vectors:
             closest_centroid = find_closest_centroid(centroids, x)
             add_vector_to_centroid(closest_centroid[0], x)
         if check_centroid_convergence(centroids, prev_centroids):
