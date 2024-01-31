@@ -19,3 +19,33 @@ int main()
 {
     return 0;
 }
+
+double euc_12(double* v1, double* v2){
+    double dist = 0;
+    for (i=0 ; i<sizeof(v1) ;i++)
+        dist+=pow(v1[i]-v2[i],2.0)
+    return sqrt(dist) 
+}
+
+//struct tuple_of_centXdist
+
+struct Cluster {
+    double* centroid;
+    int size;
+}
+
+double* find_closest_centroid(struct Cluster *vecs , double v[]){
+    double min_dist = 0.0;
+    double *centroid;
+    for(i=0; i<sizeof(vecs); i++)
+        double d = euc_12(v,vecs[i]);
+        if (d < min_dist)
+            centroid = &vecs[i];
+            min_dist = d;
+return centroid
+    
+
+
+    
+    
+        
