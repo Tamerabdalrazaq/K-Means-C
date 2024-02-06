@@ -37,9 +37,9 @@ def main():
     d= int(d)
 
     print(K,N,d)
-    if (not N>1): print(error_messages["N"])
-    if (K>1 and N<K): print(error_messages["N"])
-    if (not 1<iter<1000): print(error_messages["iter"])
+    if (not N>1): return print(error_messages["N"])
+    if (K>1 and N<K): return print(error_messages["N"])
+    if (not 1<iter<1000): return print(error_messages["iter"])
 
     output = k_means(K,N,d,iter,data)
     correct_output = readXconv("output_3.txt")
