@@ -2,17 +2,16 @@
 #include <stdlib.h>
 #include <math.h>
 
-EPSILON = 0.01
+EPSILON = 0.01;
 
-    int
-    arrayLength(void *arr)
+int arrayLength(void *arr)
 {
     return sizeof(arr) / sizeof(arr[0]);
 }
 
-double *createArray(double n)
+void *createArray(double n, int size)
 {
-    double *array = (double *)malloc(n * sizeof(double));
+    void *array = (double *)malloc(n * size);
     if (array == NULL)
     {
         printf("Memory allocation failed!\n");
@@ -21,8 +20,10 @@ double *createArray(double n)
     return array;
 }
 
-double k_means(int K, int N, int d, int iter, int *data)
+double k_means(int K, int N, int d, int iter, int **data)
 {
+    struct Cluster *clusters = createArray(N, sizeof(struct Cluster));
+
     // create an array of k elements, initiated as the first k vektors
     // initiate a kx(d+1) matrix by the name centroids that represents the k centroids, each cell includes [k_1,...,k_d] and |K|
     // initiate another kxd matrix by the name prevCentroids that holds the previous centroids at the end of the iteration to compare the delta means
@@ -42,7 +43,20 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void k_means(double k, double n, double iter)
+// def k_means(k,n,d,iter,data):
+//     centroids = [(vector) for vector in data[0:k]]
+//     for i in range(0, iter):
+//         new_centroids = [[[0] * d, 0] for centroid in centroids] #no need to save the number of vectors
+//         for x in data:
+//             closest_centroid_index = find_closest_centroid_index(centroids, x)
+//             add_vector_to_centroid(new_centroids[closest_centroid_index], x)
+//         new_centroids =  [calc_centroid_average(cent) for cent in new_centroids]
+//         if check_centroid_convergence(centroids, new_centroids):
+//             centroids = new_centroids
+//             break
+//         centroids = new_centroids
+
+void k_means(int k, int n, int d, int iter, double *data)
 {
 }
 
@@ -91,7 +105,7 @@ double *calc_centroid_average(struct Cluster cluster)
     double *centroid = cluster.centroid;
     int n = arrayLength(centroid);
     int size = cluster.size;
-    int *averaged_vector = createArray(n);
+    int *averaged_vector = createArray(n, sizeof(double));
     for (int i = 0; i < n; i++)
     {
         averaged_vector[i] = centroid[i] / size;
