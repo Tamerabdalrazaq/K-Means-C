@@ -15,11 +15,16 @@ double k_means(int K, int N, int d, int iter, int *data)
     return 0;
 }
 
-int main()
+int main(int argc , char* argv[])
 {
+    //argc returns the count of arguments passed by the user including the program name
+    //argv is the array of strings after splitting the command line into arguments, including the program name
+    
     return 0;
 }
 
+
+void k_means(double k, double n, double iter ,
 double euc_12(double* v1, double* v2){
     double dist = 0;
     for (i=0 ; i<sizeof(v1) ;i++)
