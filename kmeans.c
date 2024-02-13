@@ -37,7 +37,7 @@ void free_clusters(Cluster *clusters)
 }
 
 
-void *create2DArray(int n, int d,int size){
+void **create2DArray(int n, int d,int size){
     double **list[n][d];
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 8; j++) {
@@ -127,7 +127,7 @@ double **sub_matrix_k(double **matrix, int k)
     return sub_array;
 }
 
-double* readXconv(char * data,n,d){
+double **readXconv(char * data,n,d){
     double* f_num = create2DArray(n,d,sizeof(double));
     int j,i = 0;
     FILE *file;
