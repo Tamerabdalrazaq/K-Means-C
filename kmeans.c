@@ -4,9 +4,32 @@
 
 EPSILON = 0.01;
 
+struct Cluster
+{
+    double *centroid;
+    int size;
+};
+typedef struct Cluster Cluster;
+
 int arrayLength(void *arr)
 {
     return sizeof(arr) / sizeof(arr[0]);
+}
+
+void free_matrix(double **matrix)
+{
+    for (int i = 0; i < arrayLength(matrix); i++)
+        free(matrix[i]);
+    free(matrix);
+}
+
+void free_clusters(Cluster *clusters)
+{
+    if (clusters != NULL)
+    {
+        free(clusters->centroid);
+        free(clusters);
+    }
 }
 
 void *createArray(double n, int size)
@@ -43,10 +66,24 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+double **sub_matrix_k(double **matrix, int k)
+{
+    double **sub_array;
+    int d = arrayLength(matrix);
+    sub_array = malloc(k * sizeof(double *));
+    for (int i = 0; i < k; i++)
+    {
+        sub_array[i] = (double *)createArray(d, sizeof(double));
+        for (int j = 0; j < d; j++)
+            sub_array[i][j] = matrix[i][j];
+    }
+    return sub_array;
+}
+
 // def k_means(k,n,d,iter,data):
 //     centroids = [(vector) for vector in data[0:k]]
 //     for i in range(0, iter):
-//         new_centroids = [[[0] * d, 0] for centroid in centroids] #no need to save the number of vectors
+//         new_centroids = [[[0] * d, 0] for centroid in centroids]
 //         for x in data:
 //             closest_centroid_index = find_closest_centroid_index(centroids, x)
 //             add_vector_to_centroid(new_centroids[closest_centroid_index], x)
@@ -56,8 +93,37 @@ int main(int argc, char *argv[])
 //             break
 //         centroids = new_centroids
 
-void k_means(int k, int n, int d, int iter, double *data)
+void k_means(int k, int n, int d, int iter, double **data)
 {
+    struct Cluster Cl;
+    double **centroids = sub_matrix_k(data, k);
+    for (int i = 0; i < iter; i++)
+    {
+        struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cl));
+        for (int j = 0; j < k; j++)
+        {
+            new_centroids[j].size = 0;
+            new_centroids[j].centroid = calloc(d, sizeof(double));
+        }
+        for (int data_i = 0; i < n; i++)
+        {
+            double *x = data[data_i];
+            int closest_centroid_index = find_closest_centroid_index(centroids, x);
+            add_vector_to_centroid(new_centroids[closest_centroid_index], x);
+        }
+        double **updated_centroids = (double **)createArray(k, sizeof(double *));
+        for (int j = 0; j < k; j++)
+        {
+            updated_centroids[j] = calc_centroid_average(new_centroids[j]);
+        }
+        int convergence = check_centroid_convergence(updated_centroids, centroids);
+        centroids = new_centroids;
+        free_matrix(updated_centroids);
+        free_clusters(new_centroids);
+        if (convergence)
+            break;
+    }
+    return centroids;
 }
 
 double euc_12(double *v1, double *v2)
@@ -70,29 +136,21 @@ double euc_12(double *v1, double *v2)
 
 // struct tuple_of_centXdist
 // Forward declaration of struct Cluster
-struct Cluster;
-// Now you can declare variables of type struct Cluster pointer
-struct Cluster *centroids;
-struct Cluster
-{
-    double *centroid;
-    double size;
-};
 
-double *find_closest_centroid(struct Cluster *vecs, double v[])
+double *find_closest_centroid_index(double **centroids, double v[])
 {
-    double min_dist = 0.0;
-    double *centroid;
-    for (int i = 0; i < sizeof(vecs); i++)
+    double min_dist = INFINITY;
+    int index;
+    for (int i = 0; i < arrayLength(centroids); i++)
     {
-        double d = euc_12(v, vecs[i].centroid);
+        double d = euc_12(v, centroids[i]);
         if (d < min_dist)
         {
-            centroid = &vecs[i];
+            index = i;
             min_dist = d;
         }
     }
-    return centroid;
+    return index;
 }
 
 // def calc_centroid_average(centroid_size_tuple):
@@ -120,23 +178,21 @@ double *calc_centroid_average(struct Cluster cluster)
 //             convergent_centroids += 1
 //     return convergent_centroids == len(centroids)
 
-int check_centroid_convergence(struct Cluster *centroids, struct Cluster *new_centroids)
+int check_centroid_convergence(double **centroids, double **new_centroids)
 {
     int convergent_centroids = 0;
     int k = arrayLength(centroids);
     for (int i = 0; i < k; i++)
     {
-        struct Cluster cluster_old = centroids[i];
-        struct Cluster cluster_new = new_centroids[i];
-        double *centroid_old = cluster_old.centroid;
-        double *centroid_new = cluster_new.centroid;
+        double *centroid_old = centroids[i];
+        double *centroid_new = new_centroids[i];
         if (euc_l2(centroid_old, centroid_new) <= EPSILON)
             convergent_centroids += 1;
     }
     return (convergent_centroids == k);
 }
 
-void add_vector_to_centroid(struct Cluster clus, double vec[])
+void add_vector_to_centroid(Cluster clus, double vec[])
 {
     for (int i; i < sizeof(clus.centroid); i++)
     {
