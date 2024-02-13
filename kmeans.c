@@ -1,13 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <setjmp.h>
 
-EPSILON = 0.01;
+#define EPSILON 0.01;
+#define ITER 200;
+jmp_buf exception_buffer;
 
 int arrayLength(void *arr)
 {
     return sizeof(arr) / sizeof(arr[0]);
 }
+
+
+void *create2DArray(int n, int d,int size){
+    double **list[n][d];
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 8; j++) {
+            list[i][j] = (double **)malloc(sizeof(double *));
+            if (list[i][j] == NULL) {
+                perror("Memory allocation failed");
+                return 1; // return error
+            }
+        }
+    }
+}
+
 
 void *createArray(double n, int size)
 {
@@ -35,13 +53,60 @@ double k_means(int K, int N, int d, int iter, int **data)
     return 0;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+    if (setjmp(exception_buffer) != 0) {
+        printf("An Error Has Occurred\n");
+    }
+    else{
+    int K= atoi((const char * argv[1]);
+    int n= atoi((const char * argv[2]);
+    int d= atoi((const char * argv[3]);
+    if (argc==6){
+        int iter = atoi((const char * argv[4]);
+        double data[n][d] = readXcon(argv[5]);
+    }
+    else{
+        int iter = ITER
+        double data[n][d] = readXcon(argv[4]);
+    }
+    double output[k][d] = k_means(K,N,d,iter,data);
+
+    //add error messages 
+    for (int i = 0; i < k; i++) {
+        for (int j = 0; j < d; j++) {
+            printf("%.4f ", array[i][j]);
+        }
+        printf("\n")
+            }
+    return 0;
+        
     // argc returns the count of arguments passed by the user including the program name
     // argv is the array of strings after splitting the command line into arguments, including the program name
 
+    }
     return 0;
 }
+
+double* readXconv(char * data,n,d){
+    double* f_num = create2DArray(n,d,sizeof(double));
+    int j,i = 0;
+    FILE *file;
+    int ch;
+    file = fopen(data, "r");
+    while ((ch = getchar()) != EOF) {
+        if (ch != '\n') {
+            f_num[i][j] = strtod(ch, NULL);
+            j++;
+        }
+        else{
+            i++;
+        }          
+    }
+    fclose(file);
+    return f_num;
+{
+
+
 
 // def k_means(k,n,d,iter,data):
 //     centroids = [(vector) for vector in data[0:k]]
