@@ -1,13 +1,12 @@
 from kmeans import k_means
-data_2_2 = [
-    [1.0, 1.0],
-    [2.0, 2.0],
-    [3.0, 3.0],
-    [4.0, 4.0],
-    [5.0, 5.0]
+array = [
+    [1, 1],
+    [2, 0],
+    [2, 1],
+    [4, 0]
 ]
-result_5_2 = k_means(3, 5, 2, 10, data_2_2)
-print("Result for n=5, d=2:")
+result_5_2 = k_means(2, 4, 2, 3, array)
+print("Result for:")
 print(result_5_2)
 
 #  (1,1) (2,2,) (3,3)

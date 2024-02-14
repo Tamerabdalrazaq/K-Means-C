@@ -91,6 +91,8 @@ def find_closest_centroid_index(centroids, v):
 def calc_centroid_average(centroid_size_tuple):
     centroid = centroid_size_tuple[0]
     size = centroid_size_tuple[1]
+    if(size == 0):
+        return [0]*len(centroid)
     return [x/size for x in centroid]
 
 def euc_l2(v1, v2):
@@ -113,7 +115,7 @@ def check_centroid_convergence(centroids, new_centroids):
             convergent_centroids += 1
     return convergent_centroids == len(centroids)
 
-try:
-    main()
-except:
-    print("An Error Has Occured")
+# try:
+#     main()
+# except:
+#     print("An Error Has Occured")
