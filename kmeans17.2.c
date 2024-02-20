@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <setjmp.h>
+#include <ctype.h>
 
 #define EPSILON 0.01
 #define ITER 200
@@ -10,13 +10,30 @@
 #define ERROR_d "Invalid dimension of point!"
 #define ERROR_iter "Invalid maximum iteration!"
 
-void printArray(double *arr, int size) {
-    for (int i = 0; i < size; i++) {
+int isStringDigit(const char *str)
+{
+    // Iterate through each character in the string
+    for (int i = 0; str[i] != '\0'; i++)
+    {
+        // Check if the character is not a digit
+        if (!isdigit(str[i]))
+        {
+            // If any character is not a digit, return false
+            return 0;
+        }
+    }
+    // If all characters are digits, return true
+    return 1;
+}
+
+void printArray(double *arr, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
         printf("%f ", (arr[i]));
     }
     printf("\n");
 }
-
 
 void print2DArray(double **array, int rows, int cols)
 {
@@ -29,7 +46,6 @@ void print2DArray(double **array, int rows, int cols)
         printf("\n");
     }
 }
-
 
 struct Cluster
 {
@@ -102,15 +118,15 @@ double **sub_matrix_k(double **matrix, int k, int d)
 
     for (int i = 0; i < k; i++)
     {
-        printf("Sub_matrix_k \n");
+        // printf("Sub_matrix_k \n");
         sub_array[i] = (double *)createArray(d, sizeof(double));
-        for (int j = 0; j < d; j++){
+        for (int j = 0; j < d; j++)
+        {
             sub_array[i][j] = matrix[i][j];
-            printf("%lf ",sub_array[i][j]);
+            printf("%lf ", sub_array[i][j]);
         }
-
     }
-    printf("out\n");
+    // printf("out\n");
     return sub_array;
 }
 
@@ -130,124 +146,44 @@ void free_clusters(Cluster *clusters)
     }
 }
 
-/*int main(int argc, char *argv[]){
-    if (setjmp(exception_buffer) != 0) {
-        printf("An Error Has Occurred\n");
-    }
-    else{
-    int K= atoi(const char * argv[1]);
-    int n= atoi(const char * argv[2]);
-    int d= atoi(const char * argv[3]);
-    if (argc>=6){
-        double **data = create2DArray(n, d, sizeof(double));
-        if (isdigit(iter)==0){
-            return ERROR_iter
-        }
-        else{
-            int iter = (int)atoi(const char * argv[4]);
-            //double data[n][d] = readXcon(argv[5]);
-            for (i = 0; i< N; i++){
-                for (j = 0; j<d ; j++){
-                    scanf("%lf%c", &vecs[i][j], &c);
-                }
-            }
-        }
-    }
-    else{
-        int iter = ITER
-        //double data[n][d] = readXcon(argv[4]);
-        for (i = 0; i< N; i++){
-            for (j = 0; j<d ; j++){
-                scanf("%lf%c", &vecs[i][j], &c);
-            }
-        }
-    }
-    if (isdigit(d)==0){
-        return ERROR_d
-    }
-    if (isdigit(K)==0){
-        return ERROR_K
-    }
-    if (isdigit(N)==0){
-        return ERROR_N
-    }
-    K= (int)(K)
-    N= (int)(N)
-    d= (int)(d)
-
-    if (N<=1){return ERROR_N}
-    if (K>1 & N<K) {return ERROR_K}
-    if (iter<1 or iter>1000){return ERROR_iter}
-
-    double output[k][d] = k_means(K,N,d,iter,data);
-
-
-    for (int i = 0; i < k; i++) {
-        for (int j = 0; j < d; j++) {
-            printf("%.4f ", output[i][j]);
-        }
-        printf("\n")
-            }
-    return 0;
-
-    // argc returns the count of arguments passed by the user including the program name
-    // argv is the array of strings after splitting the command line into arguments, including the program name
-
-    }
-    return 0;
- }*/
-
-
 double euc_l2(double *v1, double *v2, int d)
 {
-    printf("Calculating L2 between: \n");
-    printf("euc2: \n");
-    printArray(v1, d);
-    printArray(v2, d);
-    printf("end euc2: \n");
+    // printf("Calculating L2 between: \n");
+    // printf("euc2: \n");
+    // printArray(v1, d);
+    // printArray(v2, d);
+    // printf("end euc2: \n");
     double dist = 0.0;
-    for (int i = 0; i < d; i++){
-        printf("d_i: %f\n", v1[i] - v2[i]);
+    for (int i = 0; i < d; i++)
+    {
+        // printf("d_i: %f\n", v1[i] - v2[i]);
         dist += pow(v1[i] - v2[i], 2.0);
     }
-    printf("Dist is: sqrt(%f): %f End;\n",dist, sqrt(dist));
+    // printf("Dist is: sqrt(%f): %f End;\n", dist, sqrt(dist));
     return sqrt(dist);
 }
 
-
-/*
-double euc_l2(double *v1, double *v2, int size) {
-    double distance = 0.0;
-    // Calculate the sum of squared differences for each corresponding element
-    for (int i = 0; i < size; i++) {
-        double diff = v1[i] - v2[i];
-        distance += diff * diff;
-    }
-    return sqrt(distance);
-}
-*/
-
-int find_closest_centroid_index(double **centroids, double* v, int k, int d)
+int find_closest_centroid_index(double **centroids, double *v, int k, int d)
 {
-    printf("find_closest_centroid_index for vector: \n");
-    printArray(v, d);
+    // printf("find_closest_centroid_index for vector: \n");
+    // printArray(v, d);
     double min_dist = INFINITY;
     int index;
-    printf("Current Centroids: \n");
+    // printf("Current Centroids: \n");
     for (int i = 0; i < k; i++)
     {
-        printf("Distance from centroid:\n");
-        printArray(centroids[i], d);
+        // printf("Distance from centroid:\n");
+        // printArray(centroids[i], d);
         double dist = euc_l2(v, centroids[i], d);
-        printf("is %f\n", dist);
+        // printf("is %f\n", dist);
         if (dist < min_dist)
         {
-            printf("updated index.\n");
+            // printf("updated index.\n");
             index = i;
             min_dist = dist;
         }
     }
-    printf("End;\n");
+    // printf("End;\n");
     return index;
 }
 
@@ -256,19 +192,20 @@ double *calc_centroid_average(Cluster cluster, int d)
     double *centroid = cluster.centroid;
     int size = cluster.size;
     double *averaged_vector = calloc(d, sizeof(double));
-    printf("Calculating average of the centroid with size %d:\n", size);
-    printArray(centroid, d);
-    if(size == 0){
-        printf("Average of centroid is: \n");
-        printArray(averaged_vector, d);
+    // printf("Calculating average of the centroid with size %d:\n", size);
+    // printArray(centroid, d);
+    if (size == 0)
+    {
+        // printf("Average of centroid is: \n");
+        // printArray(averaged_vector, d);
         return averaged_vector;
     }
     for (int i = 0; i < d; i++)
     {
-        averaged_vector[i] = (double) centroid[i] / size;
+        averaged_vector[i] = (double)centroid[i] / size;
     }
-    printf("Average of centroid is %d: \n", size);
-    printArray(averaged_vector, d);
+    // printf("Average of centroid is %d: \n", size);
+    // printArray(averaged_vector, d);
 
     return averaged_vector;
 }
@@ -286,9 +223,9 @@ int check_centroid_convergence(double **centroids, double **new_centroids, int k
     return (convergent_centroids == k);
 }
 
-void add_vector_to_centroid(Cluster* clus, double vec[], int d)
+void add_vector_to_centroid(Cluster *clus, double vec[], int d)
 {
-    for (int i = 0; i < d ; i++)
+    for (int i = 0; i < d; i++)
     {
         double updated_entry_i = clus->centroid[i] + vec[i];
         clus->centroid[i] = updated_entry_i;
@@ -296,16 +233,14 @@ void add_vector_to_centroid(Cluster* clus, double vec[], int d)
     clus->size = clus->size + 1;
 }
 
-
-
 double **k_means(int k, int n, int d, int iter, double **data)
 {
     struct Cluster Cl;
     double **centroids = sub_matrix_k(data, k, d);
     for (int i = 0; i < iter; i++)
     {
-        printf("Centroids Matrix:\n");
-        print2DArray(centroids, k, d);
+        // printf("Centroids Matrix:\n");
+        // print2DArray(centroids, k, d);
         struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cl));
         int j;
         for (j = 0; j < k; j++)
@@ -313,19 +248,19 @@ double **k_means(int k, int n, int d, int iter, double **data)
             new_centroids[j].size = 0;
             new_centroids[j].centroid = calloc(d, sizeof(double));
         }
-        printf("Iterating through data:\n\n");
+        // printf("Iterating through data:\n\n");
         for (int data_i = 0; data_i < n; data_i++)
         {
             double *x = data[data_i];
-            printf("current x:\n");
-            printArray(data[data_i], d);
+            // printf("current x:\n");
+            // printArray(data[data_i], d);
             int closest_centroid_index = find_closest_centroid_index(centroids, x, k, d);
-            printf("***************\n");
-            printf("x is closest to\n");
-            printArray(centroids[closest_centroid_index], d);
-            printf("***************");
+            // printf("***************\n");
+            // printf("x is closest to\n");
+            // printArray(centroids[closest_centroid_index], d);
+            // printf("***************");
             add_vector_to_centroid(&new_centroids[closest_centroid_index], x, d);
-            printf("new cluster size is: %d\n", new_centroids[closest_centroid_index].size);
+            // printf("new cluster size is: %d\n", new_centroids[closest_centroid_index].size);
         }
         double **updated_centroids = (double **)createArray(k, sizeof(double *));
         for (j = 0; j < k; j++)
@@ -333,20 +268,104 @@ double **k_means(int k, int n, int d, int iter, double **data)
             updated_centroids[j] = calc_centroid_average(new_centroids[j], d);
         }
         int convergence = check_centroid_convergence(updated_centroids, centroids, k, d);
-        double** temp = centroids;
+        double **temp = centroids;
         centroids = updated_centroids;
-        //free_matrix(temp, k);
-        //free_clusters(new_centroids);
+        // free_matrix(temp, k);
+        // free_clusters(new_centroids);
         if (convergence)
             break;
-        printf("\n\n\nEND OF LOOP\n\n");
+        // printf("\n\n\nEND OF LOOP\n\n");
     }
+    print2DArray(centroids, k, d);
     return centroids;
 }
 
+int main(int argc, char *argv[])
+{
+    if (isStringDigit((char *)argv[3]) == 0)
+    {
+        printf(ERROR_d);
+        return 0;
+    }
+    if (isStringDigit((char *)argv[1]) == 0)
+    {
+        printf(ERROR_K);
+        return 0;
+    }
+    if (isStringDigit((char *)argv[2]) == 0)
+    {
+        printf(ERROR_N);
+        return 0;
+    }
+    int iter;
+    int K = atoi((char *)argv[1]);
+    int n = atoi((char *)argv[2]);
+    int d = atoi((char *)argv[3]);
+    double **data = (double **)createArray(n, sizeof(double *));
+    int i, j;
+    for (i = 0; i < n; i++)
+    {
+        data[i] = (double *)createArray(d, sizeof(double));
+    }
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < d; j++)
+        {
+            char c;
+            double d;
+            scanf("%lf%c", &d, &c);
+            data[i][j] = d;
+        }
+    }
+    if (argc >= 6)
+    {
+        if (isStringDigit((char *)argv[4]) == 0)
+        {
+            printf(ERROR_iter);
+            return 0;
+        }
+        else
+        {
+            int iter = atoi((char *)argv[4]);
+        }
+    }
+    else
+    {
+        iter = ITER;
+    }
 
+    if (n <= 1)
+    {
+        printf(ERROR_N);
+        return 0;
+    }
+    if (K < 1 || n < K)
+    {
+        printf(ERROR_K);
+        return 0;
+    }
+    if (iter < 1 || iter > 1000)
+    {
+        printf(ERROR_iter);
+        return 0;
+    }
 
-int main()
+    print2DArray(data, n, d);
+    printf("**********************************************\n");
+    double **output = k_means(K, n, d, iter, data);
+
+    for (int i = 0; i < K; i++)
+    {
+        for (int j = 0; j < d; j++)
+        {
+            printf("%.4f ", output[i][j]);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+
+/*int main()
 {
     int k = 4;
     int n = 6;
@@ -389,3 +408,4 @@ int main()
     printf("3333333333333333\n");
     return 0;
 }
+*/
