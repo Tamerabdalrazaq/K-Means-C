@@ -216,16 +216,14 @@ void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 double **k_means(int k, int n, int d, int iter, double **data)
 {
     /*creates the initial centroids according to the first k vectors given in the input*/
-    int convergence;
-    int i;
-    int j;
-    int data_i;
+    int i, j, data_i, convergence, closest_centroid_index;
     double **centroids, **updated_centroids;
     double *x;
+    struct Cluster *new_centroids;
     centroids = sub_matrix_k(data, k, d);
     for (i = 0; i < iter; i++)
     {
-        struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cluster));
+        new_centroids = (struct Cluster *)createArray(k, sizeof(Cluster));
         for (j = 0; j < k; j++)
         {
             new_centroids[j].size = 0;
@@ -234,7 +232,7 @@ double **k_means(int k, int n, int d, int iter, double **data)
         for (data_i = 0; data_i < n; data_i++)
         {
             x = data[data_i];
-            int closest_centroid_index = find_closest_centroid_index(centroids, x, k, d);
+            closest_centroid_index = find_closest_centroid_index(centroids, x, k, d);
             add_vector_to_centroid(&new_centroids[closest_centroid_index], x, d);
         }
         updated_centroids = (double **)createArray(k, sizeof(double *));
