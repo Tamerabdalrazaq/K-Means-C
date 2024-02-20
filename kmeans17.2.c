@@ -10,6 +10,7 @@
 #define ERROR_d "Invalid dimension of point!"
 #define ERROR_iter "Invalid maximum iteration!"
 
+
 int isStringDigit(const char *str)
 {
     // Iterate through each character in the string
@@ -26,6 +27,7 @@ int isStringDigit(const char *str)
     return 1;
 }
 
+#if DEBUG
 void printArray(double *arr, int size)
 {
     for (int i = 0; i < size; i++)
@@ -34,7 +36,9 @@ void printArray(double *arr, int size)
     }
     printf("\n");
 }
+#endif
 
+#if DEBUG
 void print2DArray(double **array, int rows, int cols)
 {
     for (int i = 0; i < rows; i++)
@@ -46,6 +50,7 @@ void print2DArray(double **array, int rows, int cols)
         printf("\n");
     }
 }
+#endif
 
 struct Cluster
 {
@@ -65,6 +70,7 @@ void *createArray(int n, int size)
     return array;
 }
 
+#if DEBUG
 // void **create2DArray(int n, int d, int size)
 // {
 //     double **list[n][d];
@@ -105,6 +111,7 @@ void *createArray(int n, int size)
 //     fclose(file);
 //     return f_num;
 // }
+#endif
 
 int arrayLength(void *arr)
 {
@@ -123,7 +130,7 @@ double **sub_matrix_k(double **matrix, int k, int d)
         for (int j = 0; j < d; j++)
         {
             sub_array[i][j] = matrix[i][j];
-            printf("%lf ", sub_array[i][j]);
+            //printf("%lf ", sub_array[i][j]);
         }
     }
     // printf("out\n");
@@ -148,11 +155,6 @@ void free_clusters(Cluster *clusters)
 
 double euc_l2(double *v1, double *v2, int d)
 {
-    // printf("Calculating L2 between: \n");
-    // printf("euc2: \n");
-    // printArray(v1, d);
-    // printArray(v2, d);
-    // printf("end euc2: \n");
     double dist = 0.0;
     for (int i = 0; i < d; i++)
     {
@@ -165,25 +167,17 @@ double euc_l2(double *v1, double *v2, int d)
 
 int find_closest_centroid_index(double **centroids, double *v, int k, int d)
 {
-    // printf("find_closest_centroid_index for vector: \n");
-    // printArray(v, d);
     double min_dist = INFINITY;
     int index;
-    // printf("Current Centroids: \n");
     for (int i = 0; i < k; i++)
     {
-        // printf("Distance from centroid:\n");
-        // printArray(centroids[i], d);
         double dist = euc_l2(v, centroids[i], d);
-        // printf("is %f\n", dist);
         if (dist < min_dist)
         {
-            // printf("updated index.\n");
             index = i;
             min_dist = dist;
         }
     }
-    // printf("End;\n");
     return index;
 }
 
@@ -192,21 +186,14 @@ double *calc_centroid_average(Cluster cluster, int d)
     double *centroid = cluster.centroid;
     int size = cluster.size;
     double *averaged_vector = calloc(d, sizeof(double));
-    // printf("Calculating average of the centroid with size %d:\n", size);
-    // printArray(centroid, d);
     if (size == 0)
     {
-        // printf("Average of centroid is: \n");
-        // printArray(averaged_vector, d);
         return averaged_vector;
     }
     for (int i = 0; i < d; i++)
     {
         averaged_vector[i] = (double)centroid[i] / size;
     }
-    // printf("Average of centroid is %d: \n", size);
-    // printArray(averaged_vector, d);
-
     return averaged_vector;
 }
 
@@ -276,7 +263,7 @@ double **k_means(int k, int n, int d, int iter, double **data)
             break;
         // printf("\n\n\nEND OF LOOP\n\n");
     }
-    print2DArray(centroids, k, d);
+    //print2DArray(centroids, k, d);
     return centroids;
 }
 
@@ -350,8 +337,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    print2DArray(data, n, d);
-    printf("**********************************************\n");
+    //print2DArray(data, n, d);
+    //printf("**********************************************\n");
     double **output = k_means(K, n, d, iter, data);
 
     for (int i = 0; i < K; i++)
