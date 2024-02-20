@@ -14,7 +14,8 @@
 int isStringDigit(const char *str)
 {
     // Iterate through each character in the string
-    for (int i = 0; str[i] != '\0'; i++)
+    int i;
+    for (i = 0; str[i] != '\0'; i++)
     {
         // Check if the character is not a digit
         if (!isdigit(str[i]))
@@ -27,7 +28,7 @@ int isStringDigit(const char *str)
     return 1;
 }
 
-#if DEBUG
+/*
 void printArray(double *arr, int size)
 {
     for (int i = 0; i < size; i++)
@@ -36,9 +37,9 @@ void printArray(double *arr, int size)
     }
     printf("\n");
 }
-#endif
+*/
 
-#if DEBUG
+/*
 void print2DArray(double **array, int rows, int cols)
 {
     for (int i = 0; i < rows; i++)
@@ -50,7 +51,7 @@ void print2DArray(double **array, int rows, int cols)
         printf("\n");
     }
 }
-#endif
+*/
 
 struct Cluster
 {
@@ -70,7 +71,8 @@ void *createArray(int n, int size)
     return array;
 }
 
-#if DEBUG
+/*
+ *
 // void **create2DArray(int n, int d, int size)
 // {
 //     double **list[n][d];
@@ -88,58 +90,30 @@ void *createArray(int n, int size)
 //     }
 //     return list;
 // }
-
-// double **readXconv(char *data, int n, int d)
-// {
-//     double **f_num = create2DArray(n, d, sizeof(double));
-//     int j, i = 0;
-//     FILE *file;
-//     int ch;
-//     file = fopen(data, "r");
-//     while ((ch = getchar()) != EOF)
-//     {
-//         if (ch != '\n')
-//         {
-//             f_num[i][j] = strtod(ch, NULL);
-//             j++;
-//         }
-//         else
-//         {
-//             i++;
-//         }
-//     }
-//     fclose(file);
-//     return f_num;
-// }
-#endif
-
-int arrayLength(void *arr)
-{
-    return (sizeof(arr) / sizeof(arr[0]));
-}
-
+*/
 double **sub_matrix_k(double **matrix, int k, int d)
 {
     double **sub_array;
     sub_array = malloc(k * sizeof(double *));
 
-    for (int i = 0; i < k; i++)
+    int i;
+    int j;
+    for (i = 0; i < k; i++)
     {
-        // printf("Sub_matrix_k \n");
         sub_array[i] = (double *)createArray(d, sizeof(double));
-        for (int j = 0; j < d; j++)
+        for (j = 0; j < d; j++)
         {
             sub_array[i][j] = matrix[i][j];
-            //printf("%lf ", sub_array[i][j]);
         }
     }
-    // printf("out\n");
+
     return sub_array;
 }
 
 void free_matrix(double **matrix, int k)
 {
-    for (int i = 0; i < k; i++)
+    int i;
+    for (i = 0; i < k; i++)
         free(matrix[i]);
     free(matrix);
 }
@@ -156,12 +130,13 @@ void free_clusters(Cluster *clusters)
 double euc_l2(double *v1, double *v2, int d)
 {
     double dist = 0.0;
-    for (int i = 0; i < d; i++)
+    int i;
+    for (i = 0; i < d; i++)
     {
-        // printf("d_i: %f\n", v1[i] - v2[i]);
+
         dist += pow(v1[i] - v2[i], 2.0);
     }
-    // printf("Dist is: sqrt(%f): %f End;\n", dist, sqrt(dist));
+
     return sqrt(dist);
 }
 
@@ -169,7 +144,8 @@ int find_closest_centroid_index(double **centroids, double *v, int k, int d)
 {
     double min_dist = INFINITY;
     int index;
-    for (int i = 0; i < k; i++)
+    int i;
+    for (i = 0; i < k; i++)
     {
         double dist = euc_l2(v, centroids[i], d);
         if (dist < min_dist)
@@ -190,7 +166,8 @@ double *calc_centroid_average(Cluster cluster, int d)
     {
         return averaged_vector;
     }
-    for (int i = 0; i < d; i++)
+    int i;
+    for (i = 0; i < d; i++)
     {
         averaged_vector[i] = (double)centroid[i] / size;
     }
@@ -200,7 +177,8 @@ double *calc_centroid_average(Cluster cluster, int d)
 int check_centroid_convergence(double **centroids, double **new_centroids, int k, int d)
 {
     int convergent_centroids = 0;
-    for (int i = 0; i < k; i++)
+    int i;
+    for (i = 0; i < k; i++)
     {
         double *centroid_old = centroids[i];
         double *centroid_new = new_centroids[i];
@@ -210,9 +188,10 @@ int check_centroid_convergence(double **centroids, double **new_centroids, int k
     return (convergent_centroids == k);
 }
 
-void add_vector_to_centroid(Cluster *clus, double vec[], int d)
+void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 {
-    for (int i = 0; i < d; i++)
+    int i;
+    for (i = 0; i < d; i++)
     {
         double updated_entry_i = clus->centroid[i] + vec[i];
         clus->centroid[i] = updated_entry_i;
@@ -222,32 +201,23 @@ void add_vector_to_centroid(Cluster *clus, double vec[], int d)
 
 double **k_means(int k, int n, int d, int iter, double **data)
 {
-    struct Cluster Cl;
     double **centroids = sub_matrix_k(data, k, d);
-    for (int i = 0; i < iter; i++)
+    int i;
+    for (i = 0; i < iter; i++)
     {
-        // printf("Centroids Matrix:\n");
-        // print2DArray(centroids, k, d);
-        struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cl));
+        struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cluster));
         int j;
         for (j = 0; j < k; j++)
         {
             new_centroids[j].size = 0;
             new_centroids[j].centroid = calloc(d, sizeof(double));
         }
-        // printf("Iterating through data:\n\n");
-        for (int data_i = 0; data_i < n; data_i++)
+        int data_i;
+        for (data_i = 0; data_i < n; data_i++)
         {
             double *x = data[data_i];
-            // printf("current x:\n");
-            // printArray(data[data_i], d);
             int closest_centroid_index = find_closest_centroid_index(centroids, x, k, d);
-            // printf("***************\n");
-            // printf("x is closest to\n");
-            // printArray(centroids[closest_centroid_index], d);
-            // printf("***************");
             add_vector_to_centroid(&new_centroids[closest_centroid_index], x, d);
-            // printf("new cluster size is: %d\n", new_centroids[closest_centroid_index].size);
         }
         double **updated_centroids = (double **)createArray(k, sizeof(double *));
         for (j = 0; j < k; j++)
@@ -255,15 +225,10 @@ double **k_means(int k, int n, int d, int iter, double **data)
             updated_centroids[j] = calc_centroid_average(new_centroids[j], d);
         }
         int convergence = check_centroid_convergence(updated_centroids, centroids, k, d);
-        double **temp = centroids;
         centroids = updated_centroids;
-        // free_matrix(temp, k);
-        // free_clusters(new_centroids);
         if (convergence)
             break;
-        // printf("\n\n\nEND OF LOOP\n\n");
     }
-    //print2DArray(centroids, k, d);
     return centroids;
 }
 
@@ -284,10 +249,14 @@ int main(int argc, char *argv[])
         printf(ERROR_N);
         return 0;
     }
+    char *end1, *end2, *end3, *end4;
+    int K = strtol(argv[1], &end1, 10);
+    int n = strtol(argv[2], &end2, 10);
+    int d = strtol(argv[3], &end3, 10);
     int iter;
-    int K = atoi((char *)argv[1]);
-    int n = atoi((char *)argv[2]);
-    int d = atoi((char *)argv[3]);
+    //int K = atoi((char *)argv[1]);
+    //int n = atoi((char *)argv[2]);
+    //int d = atoi((char *)argv[3]);
     double **data = (double **)createArray(n, sizeof(double *));
     int i, j;
     for (i = 0; i < n; i++)
@@ -299,9 +268,9 @@ int main(int argc, char *argv[])
         for (j = 0; j < d; j++)
         {
             char c;
-            double d;
-            scanf("%lf%c", &d, &c);
-            data[i][j] = d;
+            double m;
+            scanf("%lf%c", &m, &c);
+            data[i][j] = m;
         }
     }
     if (argc >= 6)
@@ -313,7 +282,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            int iter = atoi((char *)argv[4]);
+            iter = strtol(argv[4], &end4, 10);
         }
     }
     else
@@ -337,13 +306,11 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    //print2DArray(data, n, d);
-    //printf("**********************************************\n");
     double **output = k_means(K, n, d, iter, data);
 
-    for (int i = 0; i < K; i++)
+    for (i = 0; i < K; i++)
     {
-        for (int j = 0; j < d; j++)
+        for (j = 0; j < d; j++)
         {
             printf("%.4f ", output[i][j]);
         }
