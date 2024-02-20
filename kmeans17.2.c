@@ -139,17 +139,28 @@ void free_clusters(Cluster *clusters)
     int n= atoi(const char * argv[2]);
     int d= atoi(const char * argv[3]);
     if (argc>=6){
+        double **data = create2DArray(n, d, sizeof(double));
         if (isdigit(iter)==0){
             return ERROR_iter
         }
-    else{
-        int iter = (int)atoi(const char * argv[4]);
-        double data[n][d] = readXcon(argv[5]);
-    }
+        else{
+            int iter = (int)atoi(const char * argv[4]);
+            //double data[n][d] = readXcon(argv[5]);
+            for (i = 0; i< N; i++){
+                for (j = 0; j<d ; j++){
+                    scanf("%lf%c", &vecs[i][j], &c);
+                }
+            }
+        }
     }
     else{
         int iter = ITER
-        double data[n][d] = readXcon(argv[4]);
+        //double data[n][d] = readXcon(argv[4]);
+        for (i = 0; i< N; i++){
+            for (j = 0; j<d ; j++){
+                scanf("%lf%c", &vecs[i][j], &c);
+            }
+        }
     }
     if (isdigit(d)==0){
         return ERROR_d
@@ -371,10 +382,10 @@ int main()
     array[5][0] = 8;
     array[5][1] = 1;
 
-    print2DArray(array, rows, cols);
+    //print2DArray(array, rows, cols);
 
     printf("hiiiiiiiiiiiarraiiiiiiiiiiiiiiiiiiiiii\n");
-    print2DArray(k_means(k, n, d, iter, array), rows, cols);
+    k_means(k, n, d, iter, array);
     printf("3333333333333333\n");
     return 0;
 }
