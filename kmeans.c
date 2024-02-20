@@ -10,7 +10,7 @@
 #define ERROR_d "Invalid dimension of point!"
 #define ERROR_iter "Invalid maximum iteration!"
 
-
+//check if a string represents an integer
 int isStringDigit(const char *str)
 {
     // Iterate through each character in the string
@@ -60,6 +60,7 @@ struct Cluster
 };
 typedef struct Cluster Cluster;
 
+//creates an array
 void *createArray(int n, int size)
 {
     void *array = malloc(n * size);
@@ -91,6 +92,8 @@ void *createArray(int n, int size)
 //     return list;
 // }
 */
+
+//creates a submatrix
 double **sub_matrix_k(double **matrix, int k, int d)
 {
     double **sub_array;
@@ -110,6 +113,7 @@ double **sub_matrix_k(double **matrix, int k, int d)
     return sub_array;
 }
 
+//used to free memory
 void free_matrix(double **matrix, int k)
 {
     int i;
@@ -118,6 +122,7 @@ void free_matrix(double **matrix, int k)
     free(matrix);
 }
 
+//used to free memory
 void free_clusters(Cluster *clusters)
 {
     if (clusters != NULL)
@@ -127,6 +132,7 @@ void free_clusters(Cluster *clusters)
     }
 }
 
+//calculates the euc distance between two given vectors
 double euc_l2(double *v1, double *v2, int d)
 {
     double dist = 0.0;
@@ -140,6 +146,7 @@ double euc_l2(double *v1, double *v2, int d)
     return sqrt(dist);
 }
 
+//finds the closest cluster to a given vector by calculating the euc dist from it
 int find_closest_centroid_index(double **centroids, double *v, int k, int d)
 {
     double min_dist = INFINITY;
@@ -157,6 +164,7 @@ int find_closest_centroid_index(double **centroids, double *v, int k, int d)
     return index;
 }
 
+//calculates the average of all vectors in a cluster
 double *calc_centroid_average(Cluster cluster, int d)
 {
     double *centroid = cluster.centroid;
@@ -174,6 +182,7 @@ double *calc_centroid_average(Cluster cluster, int d)
     return averaged_vector;
 }
 
+//checks if the last change of centroids is less than epsilon for each
 int check_centroid_convergence(double **centroids, double **new_centroids, int k, int d)
 {
     int convergent_centroids = 0;
@@ -188,6 +197,7 @@ int check_centroid_convergence(double **centroids, double **new_centroids, int k
     return (convergent_centroids == k);
 }
 
+//adds vector to a cluster
 void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 {
     int i;
@@ -199,8 +209,10 @@ void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
     clus->size = clus->size + 1;
 }
 
+
 double **k_means(int k, int n, int d, int iter, double **data)
 {
+    //creates the initial centroids according to the first k vectors given in the input
     double **centroids = sub_matrix_k(data, k, d);
     int i;
     for (i = 0; i < iter; i++)
@@ -254,9 +266,6 @@ int main(int argc, char *argv[])
     int n = strtol(argv[2], &end2, 10);
     int d = strtol(argv[3], &end3, 10);
     int iter;
-    //int K = atoi((char *)argv[1]);
-    //int n = atoi((char *)argv[2]);
-    //int d = atoi((char *)argv[3]);
     double **data = (double **)createArray(n, sizeof(double *));
     int i, j;
     for (i = 0; i < n; i++)
