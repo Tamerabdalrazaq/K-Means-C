@@ -10,21 +10,21 @@
 #define ERROR_d "Invalid dimension of point!"
 #define ERROR_iter "Invalid maximum iteration!"
 
-//check if a string represents an integer
+/*check if a string represents an integer*/
 int isStringDigit(const char *str)
 {
-    // Iterate through each character in the string
+    /* Iterate through each character in the string*/
     int i;
     for (i = 0; str[i] != '\0'; i++)
     {
-        // Check if the character is not a digit
+        /* Check if the character is not a digit*/
         if (!isdigit(str[i]))
         {
-            // If any character is not a digit, return false
+            /* If any character is not a digit, return false*/
             return 0;
         }
     }
-    // If all characters are digits, return true
+    /* If all characters are digits, return true*/
     return 1;
 }
 
@@ -60,14 +60,14 @@ struct Cluster
 };
 typedef struct Cluster Cluster;
 
-//creates an array
+/*creates an array*/
 void *createArray(int n, int size)
 {
     void *array = malloc(n * size);
     if (array == NULL)
     {
         printf("Memory allocation failed!\n");
-        exit(1); // Exit program if memory allocation fails
+        exit(1); /* Exit program if memory allocation fails*/
     }
     return array;
 }
@@ -93,14 +93,13 @@ void *createArray(int n, int size)
 // }
 */
 
-//creates a submatrix
+/*creates a submatrix*/
 double **sub_matrix_k(double **matrix, int k, int d)
 {
-    double **sub_array;
-    sub_array = malloc(k * sizeof(double *));
-
     int i;
     int j;
+    double **sub_array;
+    sub_array = malloc(k * sizeof(double *));
     for (i = 0; i < k; i++)
     {
         sub_array[i] = (double *)createArray(d, sizeof(double));
@@ -113,7 +112,7 @@ double **sub_matrix_k(double **matrix, int k, int d)
     return sub_array;
 }
 
-//used to free memory
+/*used to free memory*/
 void free_matrix(double **matrix, int k)
 {
     int i;
@@ -122,7 +121,7 @@ void free_matrix(double **matrix, int k)
     free(matrix);
 }
 
-//used to free memory
+/*used to free memory*/
 void free_clusters(Cluster *clusters)
 {
     if (clusters != NULL)
@@ -132,7 +131,7 @@ void free_clusters(Cluster *clusters)
     }
 }
 
-//calculates the euc distance between two given vectors
+/*calculates the euc distance between two given vectors*/
 double euc_l2(double *v1, double *v2, int d)
 {
     double dist = 0.0;
@@ -146,7 +145,7 @@ double euc_l2(double *v1, double *v2, int d)
     return sqrt(dist);
 }
 
-//finds the closest cluster to a given vector by calculating the euc dist from it
+/*finds the closest cluster to a given vector by calculating the euc dist from it*/
 int find_closest_centroid_index(double **centroids, double *v, int k, int d)
 {
     double min_dist = INFINITY;
@@ -164,9 +163,10 @@ int find_closest_centroid_index(double **centroids, double *v, int k, int d)
     return index;
 }
 
-//calculates the average of all vectors in a cluster
+/*calculates the average of all vectors in a cluster*/
 double *calc_centroid_average(Cluster cluster, int d)
 {
+    int i;
     double *centroid = cluster.centroid;
     int size = cluster.size;
     double *averaged_vector = calloc(d, sizeof(double));
@@ -174,7 +174,6 @@ double *calc_centroid_average(Cluster cluster, int d)
     {
         return averaged_vector;
     }
-    int i;
     for (i = 0; i < d; i++)
     {
         averaged_vector[i] = (double)centroid[i] / size;
@@ -182,7 +181,7 @@ double *calc_centroid_average(Cluster cluster, int d)
     return averaged_vector;
 }
 
-//checks if the last change of centroids is less than epsilon for each
+/*checks if the last change of centroids is less than epsilon for each*/
 int check_centroid_convergence(double **centroids, double **new_centroids, int k, int d)
 {
     int convergent_centroids = 0;
@@ -197,7 +196,7 @@ int check_centroid_convergence(double **centroids, double **new_centroids, int k
     return (convergent_centroids == k);
 }
 
-//adds vector to a cluster
+/*adds vector to a cluster*/
 void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 {
     int i;
@@ -212,19 +211,19 @@ void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 
 double **k_means(int k, int n, int d, int iter, double **data)
 {
-    //creates the initial centroids according to the first k vectors given in the input
+    /*creates the initial centroids according to the first k vectors given in the input*/
     double **centroids = sub_matrix_k(data, k, d);
     int i;
+    int j;
+    int data_i;
     for (i = 0; i < iter; i++)
     {
         struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cluster));
-        int j;
         for (j = 0; j < k; j++)
         {
             new_centroids[j].size = 0;
             new_centroids[j].centroid = calloc(d, sizeof(double));
         }
-        int data_i;
         for (data_i = 0; data_i < n; data_i++)
         {
             double *x = data[data_i];
@@ -246,6 +245,9 @@ double **k_means(int k, int n, int d, int iter, double **data)
 
 int main(int argc, char *argv[])
 {
+    int iter;
+    int i, j;
+    char *end1, *end2, *end3, *end4;
     if (isStringDigit((char *)argv[3]) == 0)
     {
         printf(ERROR_d);
@@ -261,13 +263,10 @@ int main(int argc, char *argv[])
         printf(ERROR_N);
         return 0;
     }
-    char *end1, *end2, *end3, *end4;
     int K = strtol(argv[1], &end1, 10);
     int n = strtol(argv[2], &end2, 10);
     int d = strtol(argv[3], &end3, 10);
-    int iter;
     double **data = (double **)createArray(n, sizeof(double *));
-    int i, j;
     for (i = 0; i < n; i++)
     {
         data[i] = (double *)createArray(d, sizeof(double));
