@@ -134,8 +134,9 @@ void free_clusters(Cluster *clusters)
 /*calculates the euc distance between two given vectors*/
 double euc_l2(double *v1, double *v2, int d)
 {
-    double dist = 0.0;
     int i;
+    double dist;
+    dist = 0.0;
     for (i = 0; i < d; i++)
     {
 
@@ -166,10 +167,11 @@ int find_closest_centroid_index(double **centroids, double *v, int k, int d)
 /*calculates the average of all vectors in a cluster*/
 double *calc_centroid_average(Cluster cluster, int d)
 {
-    int i;
-    double *centroid = cluster.centroid;
-    int size = cluster.size;
-    double *averaged_vector = calloc(d, sizeof(double));
+    int i, size;
+    double *centroid, *averaged_vector;
+    centroid = cluster.centroid;
+    size = cluster.size;
+    averaged_vector = calloc(d, sizeof(double));
     if (size == 0)
     {
         return averaged_vector;
@@ -184,12 +186,13 @@ double *calc_centroid_average(Cluster cluster, int d)
 /*checks if the last change of centroids is less than epsilon for each*/
 int check_centroid_convergence(double **centroids, double **new_centroids, int k, int d)
 {
-    int convergent_centroids = 0;
-    int i;
+    int i, convergent_centroids;
+    double *centroid_old, *centroid_new;
+    convergent_centroids = 0;
     for (i = 0; i < k; i++)
     {
-        double *centroid_old = centroids[i];
-        double *centroid_new = new_centroids[i];
+        centroid_old = centroids[i];
+        centroid_new = new_centroids[i];
         if (euc_l2(centroid_old, centroid_new, d) <= EPSILON)
             convergent_centroids += 1;
     }
@@ -200,9 +203,10 @@ int check_centroid_convergence(double **centroids, double **new_centroids, int k
 void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 {
     int i;
+    double updated_entry_i;
     for (i = 0; i < d; i++)
     {
-        double updated_entry_i = clus->centroid[i] + vec[i];
+        updated_entry_i = clus->centroid[i] + vec[i];
         clus->centroid[i] = updated_entry_i;
     }
     clus->size = clus->size + 1;
@@ -212,10 +216,13 @@ void add_vector_to_centroid(Cluster *clus, double const vec[], int d)
 double **k_means(int k, int n, int d, int iter, double **data)
 {
     /*creates the initial centroids according to the first k vectors given in the input*/
-    double **centroids = sub_matrix_k(data, k, d);
+    int convergence;
     int i;
     int j;
     int data_i;
+    double **centroids, **updated_centroids;
+    double *x;
+    centroids = sub_matrix_k(data, k, d);
     for (i = 0; i < iter; i++)
     {
         struct Cluster *new_centroids = (struct Cluster *)createArray(k, sizeof(Cluster));
@@ -226,16 +233,16 @@ double **k_means(int k, int n, int d, int iter, double **data)
         }
         for (data_i = 0; data_i < n; data_i++)
         {
-            double *x = data[data_i];
+            x = data[data_i];
             int closest_centroid_index = find_closest_centroid_index(centroids, x, k, d);
             add_vector_to_centroid(&new_centroids[closest_centroid_index], x, d);
         }
-        double **updated_centroids = (double **)createArray(k, sizeof(double *));
+        updated_centroids = (double **)createArray(k, sizeof(double *));
         for (j = 0; j < k; j++)
         {
             updated_centroids[j] = calc_centroid_average(new_centroids[j], d);
         }
-        int convergence = check_centroid_convergence(updated_centroids, centroids, k, d);
+        convergence = check_centroid_convergence(updated_centroids, centroids, k, d);
         centroids = updated_centroids;
         if (convergence)
             break;
@@ -245,9 +252,9 @@ double **k_means(int k, int n, int d, int iter, double **data)
 
 int main(int argc, char *argv[])
 {
-    int iter;
-    int i, j;
+    int iter, i, j, K, n, d;
     char *end1, *end2, *end3, *end4;
+    double **output, **data;
     if (isStringDigit((char *)argv[3]) == 0)
     {
         printf(ERROR_d);
@@ -263,10 +270,10 @@ int main(int argc, char *argv[])
         printf(ERROR_N);
         return 0;
     }
-    int K = strtol(argv[1], &end1, 10);
-    int n = strtol(argv[2], &end2, 10);
-    int d = strtol(argv[3], &end3, 10);
-    double **data = (double **)createArray(n, sizeof(double *));
+    K = strtol(argv[1], &end1, 10);
+    n = strtol(argv[2], &end2, 10);
+    d = strtol(argv[3], &end3, 10);
+    data = (double **)createArray(n, sizeof(double *));
     for (i = 0; i < n; i++)
     {
         data[i] = (double *)createArray(d, sizeof(double));
@@ -314,7 +321,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    double **output = k_means(K, n, d, iter, data);
+    output = k_means(K, n, d, iter, data);
 
     for (i = 0; i < K; i++)
     {
