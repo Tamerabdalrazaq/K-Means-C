@@ -43,12 +43,7 @@ def main():
     if (not 1<iter<1000): return print(error_messages["iter"])
 
     output = k_means(K,N,d,iter,data)
-
-    #adjusts the output to have only 4 digits after the floating point
-    for i in range(len(output)):
-        for j in range(len(output[i])):
-            assert(output[i][j] == correct_output[i][j])
-    return print(output)
+    print(output)
 
 
 #reads the input file and converts its data to a matrix of vectors
