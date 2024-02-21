@@ -1,3 +1,5 @@
+Python 3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
 import sys
 import math
 
@@ -28,6 +30,7 @@ def main():
         iter = ITER
         data= readXconv(args[4])
 
+    #checks if the arguments are natural numbers
     if (not d.isdigit()): return (print(error_messages["d"]))
     if (not K.isdigit()): return (print(error_messages["K"]))
     if (not N.isdigit()): return (print(error_messages["N"]))
@@ -36,19 +39,21 @@ def main():
     N= int(N)
     d= int(d)
 
-    print(K,N,d)
+    #checks the validity of the arguments
     if (not N>1): return print(error_messages["N"])
     if (K>1 and N<K): return print(error_messages["N"])
     if (not 1<iter<1000): return print(error_messages["iter"])
 
     output = k_means(K,N,d,iter,data)
-    correct_output = readXconv("output_3.txt")
+
+    #adjusts the output to have only 4 digits after the floating point
     for i in range(len(output)):
         for j in range(len(output[i])):
             assert(output[i][j] == correct_output[i][j])
     return print(output)
 
 
+#reads the input file and converts its data to a matrix of vectors
 def readXconv(file_path):
     with open("./"+file_path, 'r') as file:
         lines = file.readlines()
@@ -61,17 +66,11 @@ def readXconv(file_path):
 def k_means(k,n,d,iter,data):
     centroids = [(vector) for vector in data[0:k]]
     for i in range(0, iter):
-        # print("********************************")
-        new_centroids = [[[0] * d, 0] for centroid in centroids] #no need to save the number of vectors
+        new_centroids = [[[0] * d, 0] for centroid in centroids] 
         for x in data:
             closest_centroid_index = find_closest_centroid_index(centroids, x)
             add_vector_to_centroid(new_centroids[closest_centroid_index], x)
-            # print(str(x) + " --> " + str(centroids[closest_centroid_index]))
         new_centroids =  [calc_centroid_average(cent) for cent in new_centroids]
-        # print("curr centroids")
-        # print(centroids)
-        # print("new centroids")
-        # print(new_centroids)
         if check_centroid_convergence(centroids, new_centroids):
             centroids = new_centroids
             break
@@ -79,6 +78,7 @@ def k_means(k,n,d,iter,data):
         
     return  [[round(num, 4) for num in centroid] for centroid in centroids]
 
+#finds the closest cluster of a vector
 def find_closest_centroid_index(centroids, v):
     closest_centroid_tuple = (None, math.inf)
     for i  in range(len(centroids)):
@@ -88,6 +88,7 @@ def find_closest_centroid_index(centroids, v):
             closest_centroid_tuple = (i, distance)
     return closest_centroid_tuple[0]
 
+#calculates the average of all vectors in a cluster
 def calc_centroid_average(centroid_size_tuple):
     centroid = centroid_size_tuple[0]
     size = centroid_size_tuple[1]
@@ -95,12 +96,14 @@ def calc_centroid_average(centroid_size_tuple):
         return [0]*len(centroid)
     return [x/size for x in centroid]
 
+#computes the euclidean distance of two given vectors
 def euc_l2(v1, v2):
     dist = 0
     for i in range(len(v1)):
         dist += math.pow(v1[i]-v2[i], 2)
     return math.sqrt(dist)
 
+#adds a vector to a cluster
 def add_vector_to_centroid(centroid_tuple, v):
     for i in range(len(centroid_tuple[0])):
         updated_entry_i = centroid_tuple[0][i] + v[i]
@@ -108,6 +111,7 @@ def add_vector_to_centroid(centroid_tuple, v):
     centroid_tuple[1] += 1
 
 
+#checks if the gap between two centroids is smaller than epsilon
 def check_centroid_convergence(centroids, new_centroids):
     convergent_centroids = 0
     for i in range(len(centroids)):
@@ -115,7 +119,8 @@ def check_centroid_convergence(centroids, new_centroids):
             convergent_centroids += 1
     return convergent_centroids == len(centroids)
 
-# try:
-#     main()
-# except:
-#     print("An Error Has Occured")
+#in case there are errors in the runtime
+try:
+    main()
+except:
+    print("An Error Has Occured")
