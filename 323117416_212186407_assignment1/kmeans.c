@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
         free_matrix(data, n);
         return 1;
     }
-    if (K < 1 || n < K)
+    if (K <= 1 || n <= K)
     {
         printf(ERROR_K);
         free_matrix(data, n);
