@@ -39,7 +39,7 @@ def main():
 
     #checks the validity of the arguments
     if (not N>1): return print(error_messages["N"])
-    if (K>1 and N<K): return print(error_messages["K"])
+    if (K<=1 or N<=K): return print(error_messages["K"])
     if(d<1): return print(error_messages["d"])
     if (not 1<iter<1000): return print(error_messages["iter"])
 
