@@ -3,7 +3,7 @@
 #include <math.h>
 #include <ctype.h>
 
-#define EPSILON 0.01
+#define EPSILON 0.001
 #define ITER 200
 #define ERROR_K "Invalid number of clusters!"
 #define ERROR_N "Invalid number of points!"
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
         free_matrix(data, n);
         return 1;
     }
-    if (iter < 1 || iter > 1000)
+    if (iter <= 1 || iter >= 1000)
     {
         printf(ERROR_iter);
         free_matrix(data, n);
