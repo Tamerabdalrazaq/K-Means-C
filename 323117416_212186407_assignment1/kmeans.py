@@ -2,7 +2,7 @@ import sys
 import math
 
 
-EPSILON = 0.01
+EPSILON = 0.001
 ITER = 200
 error_messages = {
     "K": "Invalid number of clusters!",
@@ -52,7 +52,7 @@ def main():
 
 #reads the input file and converts its data to a matrix of vectors
 def readXconv(file_path):
-    with open("./"+file_path, 'r') as file:
+    with open(file_path, 'r') as file:
         lines = file.readlines()
         fl_strings = [line.split(',') for line in lines]
         fl_num = []
